@@ -95,5 +95,5 @@ break;
 // end of for Loop block.
 if(ncount==3)
 printf("\n you attempt your pin more than three times please re insert your card and try again");
-//end of void block.
+}//end of void block.
  // then save this code with name.c and compile and run the program.
