@@ -55,7 +55,8 @@ if(amount%100==0 || amount%500==0 || amount%2000)
 {
 if(balance>=amount+1000)
 {
-balance-balance-amount;
+balance=balance-amount;
+printf("\n\n\t Balance left in your account is:=%d", balance);
 s[a]=amount;
 count++;
 a++;
