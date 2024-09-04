@@ -14,11 +14,12 @@ int amount=0;
    
 for(i=0;i<=2;i++)
    {
-printf("\n enter your pin:==");
+printf("\n enter your pin:==",pin);
 scanf("%d", &pin);
 if(pin!=1234)
 {
- printf("wrong pin"); ++ncount;
+ printf("wrong pin"); 
+   ++ncount;
 }
 else
 {
@@ -27,8 +28,10 @@ else
 {
 printf("\n BANK OF INDIA");
 printf("\n 1.balance inquiry");
+   
 printf("\n 2.services");
 printf("\n 3.cash withdrawal");
+   
 printf("\n 4.mini statement");
 
 printf("\n\n enter your choice:==");
@@ -37,16 +40,16 @@ printf("\n\n enter your choice:==");
 switch(n)
 {
 case 1:
-printf("\n\n\t Balance left in your account is:=%d", balance); break;
+printf("\n\n\t Balance left in your account is:=%d", balance);
 break;
 
 case 2:
-printf("\n\n\tBank services: \n 1.we provided loans upto 1 1akh at a time. \n 2.other services will be notified later
+printf("\n\n\tBank services: \n 1.we provided loans upto 1 1akh at a time. \n 2.other services will be notified later");
 break;
 
 case 3:
-printf("\nEnter the amount to withdrawal:=="); 
 printf("\n\n\tAmount should be multiple of 100 or 500 or 2000");
+printf("\nEnter the amount to withdrawal:=="); 
 scanf("%d",&amount);
 if(amount%100==0 || amount%500==0 || amount%2000)
 {
@@ -59,15 +62,16 @@ a++;
 }
 
 else
-printf("\nyour account balance is low therefore transaction can not proceed");
+printf("\n your account balance is low therefore transaction can not proceed");
 }
 else
 { printf("\n amount is not the multiple of 100 or 500 or 2000");
 }
 break;
+
 case 4:
 printf("\nyour account mini statement is given below:=="); 
-   for(i=1;i<=count; i++)
+for(i=1;i<=count; i++)
 {
 printf("\nIn %d transaction %d amount is deducted from your account", i,s[i]);
 }
