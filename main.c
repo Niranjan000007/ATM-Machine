@@ -1,100 +1,112 @@
+#include <stdio.h>
 
-#include<stdio.h>     //include Libraries.
-#include<conio.h>     //include Libraries.
+#define MAX_PIN_TRIES 3
+#define INITIAL_BALANCE 10000
 
-void main()
-{
-int n,i,pin;     //
-int s[10];
-int a=1;
-char c;
-int balance=10000;
-int count=0, ncount=0;
-int amount=0;
-   
-for(i=0;i<=2;i++)
-   {
-printf("\n enter your pin:==",pin);
-scanf("%d", &pin);
-if(pin!=1234)
-{
- printf("wrong pin"); 
-   ++ncount;
-}
-else
-{
+int verify_pin(int correct_pin) {
+    int attempts = 0, entered_pin;
 
- do
-{
-printf("\n BANK OF INDIA");
-printf("\n 1.balance inquiry");
-   
-printf("\n 2.services");
-printf("\n 3.cash withdrawal");
-   
-printf("\n 4.mini statement");
+    do {
+        printf("Enter your 4-digit PIN: ");
+        scanf("%d", &entered_pin);
 
-printf("\n\n enter your choice:==");
- scanf("%d",&n);
+        if (entered_pin != correct_pin) {
+            printf("Incorrect PIN. Please try again.\n");
+            attempts++;
+        }
+    } while (entered_pin != correct_pin && attempts < MAX_PIN_TRIES);
 
-switch(n)
-{
-case 1:
-printf("\n\n\t Balance left in your account is:=%d", balance);
-break;
+    if (attempts == MAX_PIN_TRIES) {
+        printf("Too many incorrect PIN attempts. Your card has been blocked.\n");
+        return 0;
+    }
 
-case 2:
-printf("\n\n\tBank services: \n 1.we provided loans upto 1 1akh at a time. \n 2.other services will be notified later");
-break;
-
-case 3:
-printf("\n\n\tAmount should be multiple of 100 or 500 or 2000");
-printf("\nEnter the amount to withdrawal:=="); 
-scanf("%d",&amount);
-if(amount%100==0 || amount%500==0 || amount%2000)
-{
-if(balance>=amount+1000)
-{
-balance=balance-amount;
-printf("\n\n\t Balance left in your account is:=%d", balance);
-s[a]=amount;
-count++;
-a++;
+    return 1;
 }
 
-else
-printf("\n your account balance is low therefore transaction can not proceed");
-}
-else
-{ printf("\n amount is not the multiple of 100 or 500 or 2000");
-}
-break;
-
-case 4:
-printf("\nyour account mini statement is given below:=="); 
-for(i=1;i<=count; i++)
-{
-printf("\nIn %d transaction %d amount is deducted from your account", i,s[i]);
-}
-break;
-default:
-printf("select a correct option");
-}
-   //end of switch block.
-printf("\n\tfor re-seen options press 'y' otherwise 'n':==");
-scanf("%s", &c);
-}
-while(c=='y');
-
-// end of do while loop.
-break;
-
-// break statement is use for break else statement after run one time.
+void display_balance(int balance) {
+    printf("\nYour current balance is: %d\n", balance);
 }
 
+void offer_services() {
+    printf("\n\n\tBank services: \n");
+    printf("1. We provide loans up to 1 lakh at a time.\n");
+    printf("2. Other services will be notified later.\n");
 }
-// end of for Loop block.
-if(ncount==3)
-printf("\n you attempt your pin more than three times please re insert your card and try again");
-}//end of void block.
- // then save this code with name.c and compile and run the program.
+
+int withdraw_cash(int balance) {
+    int amount;
+
+    printf("\nEnter the amount to withdraw (must be a multiple of 100): ");
+    scanf("%d", &amount);
+
+    if (amount % 100 == 0 || amount % 500 == 0 || amount % 2000 == 0) {
+        if (balance >= amount + 1000) {
+            balance -= amount;
+            printf("Withdrawal successful. Your new balance is: %d\n", balance);
+            return amount; // Return the withdrawn amount for mini statement
+        } else {
+            printf("\nYour account balance is low. Transaction cannot proceed.\n");
+        }
+    } else {
+        printf("\nAmount is not a multiple of 100\n");
+    }
+
+    return 0; // Return 0 if withdrawal failed
+}
+
+void deposit_cash(int *balance) {
+    int amount;
+
+    printf("\nEnter the amount to deposit: ");
+    scanf("%d", &amount);
+
+    if (amount > 0) {
+        *balance += amount;
+        printf("Deposit successful. Your new balance is: %d\n", *balance);
+    } else {
+        printf("\nInvalid deposit amount.\n");
+    }
+}
+
+int main() {
+    int correct_pin = 1234; // Replace with your desired PIN
+    int balance = INITIAL_BALANCE;
+    char choice;
+
+    if (verify_pin(correct_pin)) {
+        do {
+            printf("\n\nBANK OF INDIA\n");
+            printf("\n1. Balance Inquiry\n");
+            printf("2. Services\n");
+            printf("3. Cash Withdrawal\n");
+            printf("4. Cash Deposit\n"); // Add the deposit option
+            printf("5. Exit\n");
+            printf("\nEnter your choice: ");
+            scanf(" %c", &choice); // Use space before %c to consume newline character
+
+            switch (choice) {
+                case '1':
+                    display_balance(balance);
+                    break;
+                case '2':
+                    offer_services();
+                    break;
+                case '3': {
+                    int withdrawn_amount = withdraw_cash(balance);
+                    break;
+                }
+                case '4':
+                deposit_cash(&balance); // Update the balance after deposit
+                    break;
+                case '5':
+                    printf("Thank you for using the ATM.\n");
+                    break;
+                default:
+                    printf("Invalid choice. Please try again.\n");
+            }
+        } while (choice != '5');
+    }
+
+    return 0;
+}
