@@ -3,18 +3,23 @@
 #define MAX_PIN_TRIES 3
 #define INITIAL_BALANCE 10000
 
-int verify_pin(int correct_pin) {
+typedef struct {
+    int pin;
+    int balance;
+} Account;
+
+int verify_pin(Account *account) {
     int attempts = 0, entered_pin;
 
     do {
         printf("Enter your 4-digit PIN: ");
         scanf("%d", &entered_pin);
 
-        if (entered_pin != correct_pin) {
+        if (entered_pin != account->pin) {
             printf("Incorrect PIN. Please try again.\n");
             attempts++;
         }
-    } while (entered_pin != correct_pin && attempts < MAX_PIN_TRIES);
+    } while (entered_pin != account->pin && attempts < MAX_PIN_TRIES);
 
     if (attempts == MAX_PIN_TRIES) {
         printf("Too many incorrect PIN attempts. Your card has been blocked.\n");
@@ -24,8 +29,8 @@ int verify_pin(int correct_pin) {
     return 1;
 }
 
-void display_balance(int balance) {
-    printf("\nYour current balance is: %d\n", balance);
+void display_balance(Account *account) {
+    printf("\nYour current balance is: %d\n", account->balance);
 }
 
 void offer_services() {
@@ -34,16 +39,16 @@ void offer_services() {
     printf("2. Other services will be notified later.\n");
 }
 
-int withdraw_cash(int balance) {
+int withdraw_cash(Account *account) {
     int amount;
 
     printf("\nEnter the amount to withdraw (must be a multiple of 100): ");
     scanf("%d", &amount);
 
     if (amount % 100 == 0 || amount % 500 == 0 || amount % 2000 == 0) {
-        if (balance >= amount + 1000) {
-            balance -= amount;
-            printf("Withdrawal successful. Your new balance is: %d\n", balance);
+        if (account->balance >= amount + 1000) {
+            account->balance -= amount;
+            printf("Withdrawal successful. Your new balance is: %d\n", account->balance);
             return amount; // Return the withdrawn amount for mini statement
         } else {
             printf("\nYour account balance is low. Transaction cannot proceed.\n");
@@ -55,49 +60,48 @@ int withdraw_cash(int balance) {
     return 0; // Return 0 if withdrawal failed
 }
 
-void deposit_cash(int *balance) {
+void deposit_cash(Account *account) {
     int amount;
 
     printf("\nEnter the amount to deposit: ");
     scanf("%d", &amount);
 
     if (amount > 0) {
-        *balance += amount;
-        printf("Deposit successful. Your new balance is: %d\n", *balance);
+        account->balance += amount;
+        printf("Deposit successful. Your new balance is: %d\n", account->balance);
     } else {
         printf("\nInvalid deposit amount.\n");
     }
 }
 
 int main() {
-    int correct_pin = 1234; // Replace with your desired PIN
-    int balance = INITIAL_BALANCE;
-    char choice;
+    Account account = {1234, INITIAL_BALANCE}; // Replace with your desired PIN
 
-    if (verify_pin(correct_pin)) {
+    if (verify_pin(&account)) {
+        char choice;
+
         do {
             printf("\n\nBANK OF INDIA\n");
             printf("\n1. Balance Inquiry\n");
             printf("2. Services\n");
             printf("3. Cash Withdrawal\n");
-            printf("4. Cash Deposit\n"); // Add the deposit option
+            printf("4. Cash Deposit\n");
             printf("5. Exit\n");
             printf("\nEnter your choice: ");
             scanf(" %c", &choice); // Use space before %c to consume newline character
 
             switch (choice) {
                 case '1':
-                    display_balance(balance);
+                    display_balance(&account);
                     break;
                 case '2':
                     offer_services();
                     break;
-                case '3': {
-                    int withdrawn_amount = withdraw_cash(balance);
+                case '3':
+                    int withdrawn_amount = withdraw_cash(&account);
                     break;
-                }
                 case '4':
-                deposit_cash(&balance); // Update the balance after deposit
+                    deposit_cash(&account);
                     break;
                 case '5':
                     printf("Thank you for using the ATM.\n");
